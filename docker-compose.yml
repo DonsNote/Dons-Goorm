@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./Semi-Project/Server
+      dockerfile: Dockerfile
+    ports:
+      - '4000:4000'
+    env_file:
+      - ./Semi-Project/Server/.env
+    volumes:
+      - ./Semi-Project/Server/src:/app/src
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./Semi-Project/Web
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./Semi-Project/Web/.env
+    volumes:
+      - ./Semi-Project/Web/src:/app/src
+    depends_on:
+      - server
+    restart: unless-stopped

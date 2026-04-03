@@ -1,0 +1,46 @@
+# Node
+node_modules/
+dist/
+.next/
+out/
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Prisma
+prisma/migrations/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Android
+*.keystore
+*.jks
+local.properties
+.gradle/
+build/
+app/build/
+
+# iOS
+Pods/
+*.xcworkspace
+DerivedData/
+xcuserdata/
+.build/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# AI
+.claude/

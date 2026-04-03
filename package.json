@@ -1,0 +1,9 @@
+{
+  "name": "dons-goorm",
+  "private": true,
+  "scripts": {
+    "dev:server": "npm run dev --prefix Semi-Project/Server",
+    "dev:web": "npm run dev --prefix Semi-Project/Web",
+    "dev": "npm run dev:server & npm run dev:web"
+  }
+}
