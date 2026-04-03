@@ -12,56 +12,70 @@ struct GuideMessage: Identifiable {
 }
 
 struct GuideView: View {
+    var onProfileTap: () -> Void = {}
+
     @State private var messages: [GuideMessage] = [
         GuideMessage(content: "안녕하세요. 어렵고 힘드신 상황에서 찾아주셨군요.\n처리해야 할 일들에 대해 궁금한 점을 편하게 물어보세요.", isUser: false)
     ]
     @State private var inputText: String = ""
+    @FocusState private var isInputFocused: Bool
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(messages) { message in
-                                MessageBubble(message: message)
-                                    .id(message.id)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(messages) { message in
+                            MessageBubble(message: message)
+                                .id(message.id)
+                        }
+                    }
+                    .padding()
+                }
+                .scrollDismissesKeyboard(.immediately)
+                .onTapGesture { isInputFocused = false }
+                .onChange(of: messages.count) {
+                    if let last = messages.last {
+                        withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
+                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    VStack(spacing: 0) {
+                        Divider()
+                        HStack(spacing: 12) {
+                            TextField("질문을 입력해 주세요.", text: $inputText, axis: .vertical)
+                                .lineLimit(1...4)
+                                .focused($isInputFocused)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 10)
+                                .background(Color(uiColor: .secondarySystemGroupedBackground))
+                                .cornerRadius(20)
+
+                            Button {
+                                sendMessage()
+                            } label: {
+                                Image(systemName: "arrow.up.circle.fill")
+                                    .font(.title2)
+                                    .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? .secondary : .primary)
                             }
+                            .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
                         }
-                        .padding()
-                    }
-                    .onChange(of: messages.count) {
-                        if let last = messages.last {
-                            withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
-                        }
-                    }
-                }
-
-                Divider()
-
-                HStack(spacing: 12) {
-                    TextField("질문을 입력해 주세요.", text: $inputText, axis: .vertical)
-                        .lineLimit(1...4)
-                        .padding(.horizontal, 14)
+                        .padding(.horizontal)
                         .padding(.vertical, 10)
-                        .background(Color(uiColor: .secondarySystemGroupedBackground))
-                        .cornerRadius(20)
-
-                    Button {
-                        sendMessage()
-                    } label: {
-                        Image(systemName: "arrow.up.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? .secondary : .primary)
+                        .background(Color(uiColor: .systemBackground))
                     }
-                    .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .background(Color(uiColor: .systemBackground))
             }
             .navigationTitle("가이드")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button { onProfileTap() } label: {
+                        Image(systemName: "person.circle")
+                            .font(.title3)
+                    }
+                }
+            }
         }
     }
 

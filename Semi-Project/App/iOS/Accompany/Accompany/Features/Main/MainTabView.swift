@@ -9,6 +9,8 @@ struct MainTabView: View {
     let deceasedDate: Date
     @State private var sections: [ChecklistSection]
     @State private var selectedTab: Int = 1
+    @State private var showUserProfile: Bool = false
+    @FocusState private var focusedField: Bool
 
     init(deceasedDate: Date) {
         self.deceasedDate = deceasedDate
@@ -17,23 +19,29 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            GuideView()
+            GuideView(onProfileTap: { showUserProfile = true })
                 .tabItem {
                     Label("가이드", systemImage: "bubble.left.and.bubble.right")
                 }
                 .tag(0)
 
-            ChecklistView(sections: $sections)
+            ChecklistView(sections: $sections, onProfileTap: { showUserProfile = true })
                 .tabItem {
                     Label("체크리스트", systemImage: "checklist")
                 }
                 .tag(1)
 
-            ProgressReportView(sections: sections, deceasedDate: deceasedDate)
+            ProgressReportView(sections: sections, deceasedDate: deceasedDate, onProfileTap: { showUserProfile = true })
                 .tabItem {
                     Label("진행상황", systemImage: "chart.bar.doc.horizontal")
                 }
                 .tag(2)
+        }
+        .onChange(of: selectedTab) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .sheet(isPresented: $showUserProfile) {
+            UserProfileView()
         }
     }
 }

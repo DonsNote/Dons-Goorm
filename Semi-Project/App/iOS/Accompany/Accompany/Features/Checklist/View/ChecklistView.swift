@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ChecklistView: View {
     @Binding var sections: [ChecklistSection]
+    var onProfileTap: () -> Void = {}
 
     var body: some View {
         NavigationStack {
@@ -24,7 +25,15 @@ struct ChecklistView: View {
                 .padding()
             }
             .navigationTitle("체크리스트")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button { onProfileTap() } label: {
+                        Image(systemName: "person.circle")
+                            .font(.title3)
+                    }
+                }
+            }
         }
     }
 }

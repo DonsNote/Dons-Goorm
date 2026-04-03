@@ -8,6 +8,7 @@ import SwiftUI
 struct ProgressReportView: View {
     let sections: [ChecklistSection]
     let deceasedDate: Date
+    var onProfileTap: () -> Void = {}
 
     private var totalCompleted: Int { sections.reduce(0) { $0 + $1.completedCount } }
     private var totalTasks: Int { sections.reduce(0) { $0 + $1.totalCount } }
@@ -33,7 +34,15 @@ struct ProgressReportView: View {
                 .padding()
             }
             .navigationTitle("진행상황")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button { onProfileTap() } label: {
+                        Image(systemName: "person.circle")
+                            .font(.title3)
+                    }
+                }
+            }
         }
     }
 
