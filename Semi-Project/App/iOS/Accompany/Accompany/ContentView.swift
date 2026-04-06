@@ -7,21 +7,42 @@
 
 import SwiftUI
 
+enum AppStep {
+    case splash
+    case deceasedDateInput
+    case onboarding
+    case login
+    case main
+}
+
 struct ContentView: View {
-    @State private var showSplash: Bool = true
-    @State private var deceasedDate: Date? = nil
+    @State private var step: AppStep = .splash
+    @State private var deceasedDate: Date = Date()
+    @StateObject private var authViewModel = AuthViewModel()
 
     var body: some View {
-        if showSplash {
+        switch step {
+        case .splash:
             SplashView {
-                showSplash = false
+                step = .deceasedDateInput
             }
-        } else if let date = deceasedDate {
-            MainTabView(deceasedDate: date)
-        } else {
+        case .deceasedDateInput:
             DeceasedDateInputView { date in
                 deceasedDate = date
+                step = .onboarding
             }
+        case .onboarding:
+            OnboardingView {
+                step = .login
+            }
+        case .login:
+            AuthView()
+                .environmentObject(authViewModel)
+                .onChange(of: authViewModel.isLoggedIn) {
+                    if authViewModel.isLoggedIn { step = .main }
+                }
+        case .main:
+            MainTabView(deceasedDate: deceasedDate)
         }
     }
 }

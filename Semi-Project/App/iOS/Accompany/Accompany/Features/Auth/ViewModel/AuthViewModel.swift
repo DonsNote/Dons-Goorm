@@ -4,38 +4,64 @@ internal import Combine
 
 @MainActor
 final class AuthViewModel: ObservableObject {
-    @Published var user: User? = nil
-    @Published var isLoading = false
+    @Published var isLoggedIn: Bool = false
+    @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
 
     private let supabase = SupabaseManager.shared.client
 
-    func signIn(email: String, password: String) async {
+    init() {
+        Task { await checkSession() }
+    }
+
+    func checkSession() async {
+        if let _ = try? await supabase.auth.session {
+            isLoggedIn = true
+        }
+    }
+
+    func signInWithApple() async {
         isLoading = true
         defer { isLoading = false }
         do {
-            let session = try await supabase.auth.signIn(email: email, password: password)
-            user = session.user
+            try await supabase.auth.signInWithOAuth(provider: .apple)
+            isLoggedIn = true
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    func signUp(email: String, password: String) async {
+    func signInWithGoogle() async {
         isLoading = true
         defer { isLoading = false }
         do {
-            let session = try await supabase.auth.signUp(email: email, password: password)
-            user = session.user
+            try await supabase.auth.signInWithOAuth(provider: .google)
+            isLoggedIn = true
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func signInWithKakao() async {
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            try await supabase.auth.signInWithOAuth(provider: .kakao)
+            isLoggedIn = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // TODO: 실제 소셜 로그인 연동 후 제거
+    func signInMock() {
+        isLoggedIn = true
     }
 
     func signOut() async {
         do {
             try await supabase.auth.signOut()
-            user = nil
+            isLoggedIn = false
         } catch {
             errorMessage = error.localizedDescription
         }

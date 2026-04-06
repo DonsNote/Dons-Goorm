@@ -1,63 +1,125 @@
 import SwiftUI
 
 struct AuthView: View {
-    @StateObject private var viewModel = AuthViewModel()
-    @State private var email = ""
-    @State private var password = ""
-    @State private var isSignUp = false
+    @EnvironmentObject private var viewModel: AuthViewModel
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text(isSignUp ? "회원가입" : "로그인")
-                .font(.largeTitle)
-                .bold()
+        VStack(spacing: 0) {
+            Spacer()
 
-            TextField("이메일", text: $email)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
+            VStack(spacing: 12) {
+                Image(systemName: "heart.circle")
+                    .font(.system(size: 64))
+                    .foregroundColor(.primary)
 
-            SecureField("비밀번호", text: $password)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
+                Text("동행")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
 
-            if let error = viewModel.errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-                    .font(.caption)
+                Text("홀로 남겨지지 않도록,\n함께 걷겠습니다.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
 
-            Button {
-                Task {
-                    if isSignUp {
-                        await viewModel.signUp(email: email, password: password)
-                    } else {
-                        await viewModel.signIn(email: email, password: password)
-                    }
+            Spacer()
+
+            VStack(spacing: 12) {
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
                 }
-            } label: {
+
+                SocialLoginButton(
+                    label: "Apple로 계속하기",
+                    icon: "apple.logo",
+                    backgroundColor: .black,
+                    foregroundColor: .white
+                ) {
+                    viewModel.signInMock()
+                }
+
+                SocialLoginButton(
+                    label: "Google로 계속하기",
+                    customIcon: "G",
+                    backgroundColor: .white,
+                    foregroundColor: .black,
+                    hasBorder: true
+                ) {
+                    viewModel.signInMock()
+                }
+
+                SocialLoginButton(
+                    label: "카카오로 계속하기",
+                    customIcon: "K",
+                    backgroundColor: Color(red: 1.0, green: 0.9, blue: 0.0),
+                    foregroundColor: Color(red: 0.13, green: 0.13, blue: 0.13)
+                ) {
+                    viewModel.signInMock()
+                }
+
+
+            }
+            .disabled(viewModel.isLoading)
+            .overlay {
                 if viewModel.isLoading {
                     ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                } else {
-                    Text(isSignUp ? "회원가입" : "로그인")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
                 }
             }
-
-            Button(isSignUp ? "이미 계정이 있으신가요? 로그인" : "계정이 없으신가요? 회원가입") {
-                isSignUp.toggle()
-            }
-            .font(.footnote)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 52)
         }
-        .padding()
+        .background(Color(uiColor: .systemBackground))
     }
+}
+
+private struct SocialLoginButton: View {
+    let label: String
+    var icon: String? = nil
+    var customIcon: String? = nil
+    let backgroundColor: Color
+    let foregroundColor: Color
+    var hasBorder: Bool = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.body)
+                        .frame(width: 20)
+                } else if let customIcon {
+                    Text(customIcon)
+                        .font(.body)
+                        .fontWeight(.bold)
+                        .frame(width: 20)
+                }
+
+                Text(label)
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
+            .background(backgroundColor)
+            .foregroundColor(foregroundColor)
+            .cornerRadius(12)
+            .overlay {
+                if hasBorder {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    AuthView()
+        .environmentObject(AuthViewModel())
 }
