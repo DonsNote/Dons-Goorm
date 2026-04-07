@@ -1,7 +1,11 @@
 package com.donsgoorm.app.presentation.progress
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -101,29 +108,52 @@ private fun OverallCard(ratio: Float, totalCompleted: Int, totalTasks: Int, form
                 Text("전체 진행률", fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 Text("영면일: $formattedDate", fontSize = 12.sp, color = Color.Gray)
             }
-            Text(
-                text = "${(ratio * 100).toInt()}%",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = AppColor.Accent
-            )
+            CircularProgressView(ratio = ratio, size = 80.dp)
         }
-
-        LinearProgressIndicator(
-            progress = { ratio },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(4.dp)),
-            color = AppColor.Accent,
-            trackColor = AppColor.Accent.copy(alpha = 0.15f)
-        )
 
         Text(
             text = "${totalCompleted}개 완료 / 총 ${totalTasks}개",
             fontSize = 12.sp,
             color = Color.Gray,
             modifier = Modifier.align(Alignment.End)
+        )
+    }
+}
+
+@Composable
+private fun CircularProgressView(ratio: Float, size: Dp) {
+    val animatedRatio by animateFloatAsState(
+        targetValue = ratio,
+        animationSpec = tween(durationMillis = 600),
+        label = "progress_ratio"
+    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(size)
+    ) {
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val strokeWidth = 8.dp.toPx()
+            val stroke = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+            drawArc(
+                color = AppColor.Accent.copy(alpha = 0.15f),
+                startAngle = -90f,
+                sweepAngle = 360f,
+                useCenter = false,
+                style = stroke
+            )
+            drawArc(
+                color = AppColor.Accent,
+                startAngle = -90f,
+                sweepAngle = 360f * animatedRatio,
+                useCenter = false,
+                style = stroke
+            )
+        }
+        Text(
+            text = "${(ratio * 100).toInt()}%",
+            fontSize = (size.value * 0.26f).sp,
+            fontWeight = FontWeight.Bold,
+            color = AppColor.Accent
         )
     }
 }

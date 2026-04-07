@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.donsgoorm.app.presentation.ui.AppColor
 
 data class GuideMessage(val content: String, val isUser: Boolean)
@@ -88,6 +92,10 @@ fun GuideScreen() {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item { Spacer(modifier = Modifier.height(4.dp)) }
+
+                // AI 코디네이터 헤더 카드
+                item { AICoordinatorHeader() }
+
                 items(messages) { message -> MessageBubble(message = message) }
                 item { Spacer(modifier = Modifier.height(4.dp)) }
             }
@@ -105,7 +113,7 @@ fun GuideScreen() {
                 TextField(
                     value = inputText,
                     onValueChange = { inputText = it },
-                    placeholder = { Text("질문을 입력해 주세요.", color = Color.Gray) },
+                    placeholder = { Text("궁금한 점을 물어보세요...", color = Color.Gray) },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.colors(
@@ -140,6 +148,50 @@ fun GuideScreen() {
 }
 
 @Composable
+private fun AICoordinatorHeader() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(AppColor.CardBg)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(AppColor.AccentSubtle),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Group,
+                contentDescription = null,
+                tint = AppColor.Accent,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text("AI 코디네이터", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = Color.Black)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(7.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF4CAF50))
+                )
+                Text("24시간 실시간 상담중", fontSize = 12.sp, color = Color.Gray)
+            }
+        }
+    }
+}
+
+@Composable
 private fun MessageBubble(message: GuideMessage) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -160,7 +212,9 @@ private fun MessageBubble(message: GuideMessage) {
         ) {
             Text(
                 text = message.content,
-                color = if (message.isUser) Color.White else Color.Black
+                color = if (message.isUser) Color.White else Color.Black,
+                fontSize = 14.sp,
+                lineHeight = 20.sp
             )
         }
     }

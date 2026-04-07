@@ -50,7 +50,7 @@ struct ProgressReportView: View {
 
     private var overallCard: some View {
         VStack(spacing: 16) {
-            HStack {
+            HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("전체 진행률")
                         .font(.headline)
@@ -59,13 +59,8 @@ struct ProgressReportView: View {
                         .foregroundColor(.secondary)
                 }
                 Spacer()
-                Text("\(Int(overallRatio * 100))%")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.App.accent)
+                CircularProgressView(ratio: overallRatio, size: 80)
             }
-
-            AppProgressBar(ratio: overallRatio)
 
             Text("\(totalCompleted)개 완료 / 총 \(totalTasks)개")
                 .font(.caption)
@@ -99,6 +94,30 @@ struct ProgressReportView: View {
         .padding()
         .background(Color.App.cardBg)
         .cornerRadius(AppSpacing.cardRadius)
+    }
+}
+
+// 원형 프로그레스
+private struct CircularProgressView: View {
+    let ratio: Double
+    let size: CGFloat
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.App.accent.opacity(0.15), lineWidth: 8)
+
+            Circle()
+                .trim(from: 0, to: ratio)
+                .stroke(Color.App.accent, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.easeInOut(duration: 0.6), value: ratio)
+
+            Text("\(Int(ratio * 100))%")
+                .font(.system(size: size * 0.26, weight: .bold))
+                .foregroundColor(Color.App.accent)
+        }
+        .frame(width: size, height: size)
     }
 }
 

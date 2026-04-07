@@ -37,6 +37,9 @@ DerivedData/
 xcuserdata/
 .build/
 
+# Analytics (로컬 테스트 데이터)
+analytics-data.json
+
 # Logs
 *.log
 npm-debug.log*

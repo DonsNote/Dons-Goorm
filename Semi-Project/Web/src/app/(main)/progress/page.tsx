@@ -19,17 +19,14 @@ export default function ProgressPage() {
   return (
     <div className="px-4 py-4 flex flex-col gap-3">
       {/* 전체 진행률 카드 */}
-      <div className="rounded-[14px] p-4 flex flex-col gap-4" style={{ backgroundColor: colors.cardBg }}>
+      <div className="rounded-[14px] p-4 flex flex-col gap-3" style={{ backgroundColor: colors.cardBg }}>
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">
             <p className="font-semibold text-sm">전체 진행률</p>
             {formatted && <p className="text-xs text-gray-400">영면일: {formatted}</p>}
           </div>
-          <p className="text-4xl font-bold" style={{ color: colors.accent }}>
-            {Math.round(overallRatio * 100)}%
-          </p>
+          <CircularProgress ratio={overallRatio} />
         </div>
-        <ProgressBar ratio={overallRatio} />
         <p className="text-xs text-gray-400 text-right">{totalCompleted}개 완료 / 총 {totalTasks}개</p>
       </div>
 
@@ -51,6 +48,55 @@ export default function ProgressPage() {
           </div>
         )
       })}
+    </div>
+  )
+}
+
+function CircularProgress({ ratio }: { ratio: number }) {
+  const size = 80
+  const strokeWidth = 8
+  const radius = (size - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const offset = circumference * (1 - ratio)
+
+  return (
+    <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={`${colors.accent}26`}
+          strokeWidth={strokeWidth}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={colors.accent}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.6s ease-in-out' }}
+        />
+      </svg>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 14,
+          fontWeight: 700,
+          color: colors.accent,
+        }}
+      >
+        {Math.round(ratio * 100)}%
+      </div>
     </div>
   )
 }
