@@ -10,7 +10,6 @@ struct MainTabView: View {
     @State private var sections: [ChecklistSection]
     @State private var selectedTab: Int = 1
     @State private var showUserProfile: Bool = false
-    @FocusState private var focusedField: Bool
 
     init(deceasedDate: Date) {
         self.deceasedDate = deceasedDate
@@ -37,6 +36,7 @@ struct MainTabView: View {
                 }
                 .tag(2)
         }
+        .tint(Color.App.accent)
         .onChange(of: selectedTab) {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }

@@ -4,7 +4,9 @@
       "Bash(find /Users/neveradio/Desktop/Develop/Github/Goorm/Dons-Goorm -not -path */.git/* -type d)",
       "Read(//Users/neveradio/Desktop/Develop/Github/Goorm/Dons-Goorm/!/**)",
       "Bash(while read:*)",
-      "Bash(do echo:*)"
+      "Bash(do echo:*)",
+      "Bash(brew services:*)",
+      "Bash(nginx -s stop)"
     ]
   }
 }

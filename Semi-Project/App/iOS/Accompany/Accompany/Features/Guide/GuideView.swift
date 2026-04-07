@@ -32,6 +32,7 @@ struct GuideView: View {
                     }
                     .padding()
                 }
+                .background(Color.App.lightBg)
                 .scrollDismissesKeyboard(.immediately)
                 .onTapGesture { isInputFocused = false }
                 .onChange(of: messages.count) {
@@ -48,7 +49,7 @@ struct GuideView: View {
                                 .focused($isInputFocused)
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 10)
-                                .background(Color(uiColor: .secondarySystemGroupedBackground))
+                                .background(Color.App.cardBg)
                                 .cornerRadius(20)
 
                             Button {
@@ -56,13 +57,17 @@ struct GuideView: View {
                             } label: {
                                 Image(systemName: "arrow.up.circle.fill")
                                     .font(.title2)
-                                    .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? .secondary : .primary)
+                                    .foregroundColor(
+                                        inputText.trimmingCharacters(in: .whitespaces).isEmpty
+                                            ? Color.App.accent.opacity(0.3)
+                                            : Color.App.accent
+                                    )
                             }
                             .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
                         }
                         .padding(.horizontal)
                         .padding(.vertical, 10)
-                        .background(Color(uiColor: .systemBackground))
+                        .background(Color.App.lightBg)
                     }
                 }
             }
@@ -73,6 +78,7 @@ struct GuideView: View {
                     Button { onProfileTap() } label: {
                         Image(systemName: "person.circle")
                             .font(.title3)
+                            .foregroundColor(Color.App.accent)
                     }
                 }
             }
@@ -98,8 +104,8 @@ private struct MessageBubble: View {
                 .font(.subheadline)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(message.isUser ? Color.primary : Color(uiColor: .secondarySystemGroupedBackground))
-                .foregroundColor(message.isUser ? Color(uiColor: .systemBackground) : .primary)
+                .background(message.isUser ? Color.App.accent : Color.App.cardBg)
+                .foregroundColor(message.isUser ? .white : .primary)
                 .cornerRadius(16)
             if !message.isUser { Spacer(minLength: 60) }
         }

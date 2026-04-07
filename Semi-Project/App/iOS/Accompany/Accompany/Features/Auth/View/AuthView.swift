@@ -4,75 +4,76 @@ struct AuthView: View {
     @EnvironmentObject private var viewModel: AuthViewModel
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        ZStack {
+            Color.App.lightBg.ignoresSafeArea()
 
-            VStack(spacing: 12) {
-                Image(systemName: "heart.circle")
-                    .font(.system(size: 64))
-                    .foregroundColor(.primary)
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("처음부터 끝까지\n함께 동행하겠습니다")
+                        .font(Font.App.displayBold)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
 
-                Text("동행")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    Text("고인께서 남기신 것들\n저희가 끝까지 곁에서 정리해드리겠습니다")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .lineSpacing(3)
+                }
+                .padding(.top, 72)
+                .padding(.horizontal, 28)
 
-                Text("홀로 남겨지지 않도록,\n함께 걷겠습니다.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
+                Spacer()
+
+                VStack(alignment: .leading, spacing: 20) {
+                    if let error = viewModel.errorMessage {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(Color.App.warning)
+                    }
+
+                    Text("목록 저장과 D-day 알림\n로그인 후 시작 됩니다")
+                        .font(.footnote)
+                        .foregroundColor(Color.App.accentDim)
+                        .lineSpacing(3)
+
+                    VStack(spacing: 12) {
+                        SocialLoginButton(
+                            label: "카카오로 시작하기",
+                            customIcon: "K",
+                            backgroundColor: Color.App.kakao,
+                            foregroundColor: Color.App.kakaoFg
+                        ) {
+                            viewModel.signInMock()
+                        }
+
+                        SocialLoginButton(
+                            label: "Google로 시작하기",
+                            customIcon: "G",
+                            backgroundColor: .white,
+                            foregroundColor: .black,
+                            hasBorder: true
+                        ) {
+                            viewModel.signInMock()
+                        }
+
+                        SocialLoginButton(
+                            label: "Apple로 시작하기",
+                            icon: "apple.logo",
+                            backgroundColor: .black,
+                            foregroundColor: .white
+                        ) {
+                            viewModel.signInMock()
+                        }
+                    }
+                    .disabled(viewModel.isLoading)
+                    .overlay {
+                        if viewModel.isLoading { ProgressView() }
+                    }
+                }
+                .padding(.horizontal, AppSpacing.screenHorizontal)
+                .padding(.bottom, AppSpacing.screenBottom + 12)
             }
-
-            Spacer()
-
-            VStack(spacing: 12) {
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
-
-                SocialLoginButton(
-                    label: "Apple로 계속하기",
-                    icon: "apple.logo",
-                    backgroundColor: .black,
-                    foregroundColor: .white
-                ) {
-                    viewModel.signInMock()
-                }
-
-                SocialLoginButton(
-                    label: "Google로 계속하기",
-                    customIcon: "G",
-                    backgroundColor: .white,
-                    foregroundColor: .black,
-                    hasBorder: true
-                ) {
-                    viewModel.signInMock()
-                }
-
-                SocialLoginButton(
-                    label: "카카오로 계속하기",
-                    customIcon: "K",
-                    backgroundColor: Color(red: 1.0, green: 0.9, blue: 0.0),
-                    foregroundColor: Color(red: 0.13, green: 0.13, blue: 0.13)
-                ) {
-                    viewModel.signInMock()
-                }
-
-
-            }
-            .disabled(viewModel.isLoading)
-            .overlay {
-                if viewModel.isLoading {
-                    ProgressView()
-                }
-            }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 52)
         }
-        .background(Color(uiColor: .systemBackground))
     }
 }
 
@@ -98,7 +99,6 @@ private struct SocialLoginButton: View {
                         .fontWeight(.bold)
                         .frame(width: 20)
                 }
-
                 Text(label)
                     .font(.body)
                     .fontWeight(.medium)
@@ -108,10 +108,10 @@ private struct SocialLoginButton: View {
             .padding(.horizontal, 20)
             .background(backgroundColor)
             .foregroundColor(foregroundColor)
-            .cornerRadius(12)
+            .cornerRadius(AppSpacing.buttonRadius)
             .overlay {
                 if hasBorder {
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: AppSpacing.buttonRadius)
                         .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
                 }
             }

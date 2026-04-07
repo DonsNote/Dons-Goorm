@@ -24,6 +24,7 @@ struct ChecklistView: View {
                 }
                 .padding()
             }
+            .background(Color.App.lightBg)
             .navigationTitle("체크리스트")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -31,6 +32,7 @@ struct ChecklistView: View {
                     Button { onProfileTap() } label: {
                         Image(systemName: "person.circle")
                             .font(.title3)
+                            .foregroundColor(Color.App.accent)
                     }
                 }
             }
@@ -46,6 +48,7 @@ private struct ChecklistCard: View {
             HStack(spacing: 10) {
                 Image(systemName: section.category.icon)
                     .font(.title3)
+                    .foregroundColor(Color.App.accent)
                 Text(section.category.title)
                     .font(.headline)
                 Spacer()
@@ -64,7 +67,7 @@ private struct ChecklistCard: View {
                     } else {
                         Text("모든 항목 완료")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.App.accentDim)
                     }
 
                     Text("\(section.completedCount)/\(section.totalCount) 완료")
@@ -78,13 +81,13 @@ private struct ChecklistCard: View {
                     Text("D-\(dDay)")
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                        .foregroundColor(dDay <= 7 ? .red : .primary)
+                        .foregroundColor(dDay <= 7 ? Color.App.warning : Color.App.accentDim)
                 }
             }
         }
         .padding()
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .cornerRadius(14)
+        .background(Color.App.cardBg)
+        .cornerRadius(AppSpacing.cardRadius)
     }
 
     private var progressBadge: some View {
@@ -93,10 +96,10 @@ private struct ChecklistCard: View {
             : 0
         return ZStack {
             Circle()
-                .stroke(Color.secondary.opacity(0.2), lineWidth: 3)
+                .stroke(Color.App.accent.opacity(0.2), lineWidth: 3)
             Circle()
                 .trim(from: 0, to: ratio)
-                .stroke(Color.primary, lineWidth: 3)
+                .stroke(Color.App.accent, lineWidth: 3)
                 .rotationEffect(.degrees(-90))
         }
         .frame(width: 28, height: 28)

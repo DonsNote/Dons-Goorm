@@ -8,51 +8,86 @@ import SwiftUI
 struct ChecklistDetailView: View {
     let section: ChecklistSection
     @Binding var sections: [ChecklistSection]
+
     private var sectionIndex: Int? {
         sections.firstIndex(where: { $0.id == section.id })
     }
 
     var body: some View {
-        List {
-            ForEach(section.tasks.indices, id: \.self) { taskIndex in
-                HStack(spacing: 14) {
-                    Image(systemName: taskIsCompleted(taskIndex) ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(taskIsCompleted(taskIndex) ? .primary : .secondary)
-                        .font(.title3)
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(section.tasks.indices, id: \.self) { taskIndex in
+                    if let si = sectionIndex {
+                        NavigationLink {
+                            TaskDetailView(
+                                task: sections[si].tasks[taskIndex],
+                                onToggleDocument: { docIndex in
+                                    sections[si].tasks[taskIndex].documents[docIndex].isReady.toggle()
+                                },
+                                onToggleTask: {
+                                    sections[si].tasks[taskIndex].isCompleted.toggle()
+                                }
+                            )
+                        } label: {
+                            TaskRow(task: sections[si].tasks[taskIndex])
+                        }
+                        .buttonStyle(.plain)
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(section.tasks[taskIndex].title)
-                            .font(.body)
-                            .strikethrough(taskIsCompleted(taskIndex))
-                            .foregroundColor(taskIsCompleted(taskIndex) ? .secondary : .primary)
-
-                        if let dDay = section.tasks[taskIndex].dDay {
-                            Text("D-\(dDay)")
-                                .font(.caption)
-                                .foregroundColor(dDay <= 7 ? .red : .secondary)
+                        if taskIndex < section.tasks.count - 1 {
+                            Divider()
+                                .padding(.leading, AppSpacing.screenHorizontal)
                         }
                     }
-
-                    Spacer()
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    toggleTask(taskIndex)
                 }
             }
+            .background(Color.App.cardBg)
+            .cornerRadius(AppSpacing.cardRadius)
+            .padding()
         }
-        .listStyle(.insetGrouped)
+        .background(Color.App.lightBg)
         .navigationTitle(section.category.title)
         .navigationBarTitleDisplayMode(.large)
     }
+}
 
-    private func taskIsCompleted(_ index: Int) -> Bool {
-        guard let si = sectionIndex else { return false }
-        return sections[si].tasks[index].isCompleted
-    }
+private struct TaskRow: View {
+    let task: ChecklistTask
 
-    private func toggleTask(_ index: Int) {
-        guard let si = sectionIndex else { return }
-        sections[si].tasks[index].isCompleted.toggle()
+    private var readyCount: Int { task.documents.filter(\.isReady).count }
+
+    var body: some View {
+        HStack(spacing: 14) {
+            Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(task.isCompleted ? Color.App.accent : Color.App.accent.opacity(0.3))
+                .font(.title3)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(task.title)
+                    .font(.body)
+                    .strikethrough(task.isCompleted)
+                    .foregroundColor(task.isCompleted ? .secondary : .primary)
+
+                HStack(spacing: 8) {
+                    if let dDay = task.dDay {
+                        Text("D-\(dDay)")
+                            .font(.caption)
+                            .foregroundColor(dDay <= 7 ? Color.App.warning : Color.App.accentDim)
+                    }
+                    if !task.documents.isEmpty {
+                        Text("서류 \(readyCount)/\(task.documents.count)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(Color.App.accent.opacity(0.5))
+        }
+        .padding(.horizontal, AppSpacing.screenHorizontal)
+        .padding(.vertical, AppSpacing.cardVertical)
     }
 }

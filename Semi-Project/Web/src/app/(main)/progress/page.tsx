@@ -2,6 +2,7 @@
 
 import { useChecklistStore } from '@/store/useChecklistStore'
 import { useOnboardingStore } from '@/store/useOnboardingStore'
+import { colors } from '@/lib/design'
 
 export default function ProgressPage() {
   const { sections } = useChecklistStore()
@@ -17,24 +18,28 @@ export default function ProgressPage() {
 
   return (
     <div className="px-4 py-4 flex flex-col gap-3">
-      <div className="bg-gray-50 rounded-2xl p-4 flex flex-col gap-4">
+      {/* 전체 진행률 카드 */}
+      <div className="rounded-[14px] p-4 flex flex-col gap-4" style={{ backgroundColor: colors.cardBg }}>
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">
-            <p className="font-semibold">전체 진행률</p>
-            {formatted && <p className="text-xs text-gray-400">사망일: {formatted}</p>}
+            <p className="font-semibold text-sm">전체 진행률</p>
+            {formatted && <p className="text-xs text-gray-400">영면일: {formatted}</p>}
           </div>
-          <p className="text-4xl font-bold">{Math.round(overallRatio * 100)}%</p>
+          <p className="text-4xl font-bold" style={{ color: colors.accent }}>
+            {Math.round(overallRatio * 100)}%
+          </p>
         </div>
         <ProgressBar ratio={overallRatio} />
         <p className="text-xs text-gray-400 text-right">{totalCompleted}개 완료 / 총 {totalTasks}개</p>
       </div>
 
+      {/* 카테고리별 카드 */}
       {sections.map((section) => {
         const completed = section.tasks.filter((t) => t.isCompleted).length
         const total = section.tasks.length
         const ratio = total > 0 ? completed / total : 0
         return (
-          <div key={section.id} className="bg-gray-50 rounded-2xl p-4 flex flex-col gap-3">
+          <div key={section.id} className="rounded-[14px] p-4 flex flex-col gap-3" style={{ backgroundColor: colors.cardBg }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span>{section.icon}</span>
@@ -52,10 +57,10 @@ export default function ProgressPage() {
 
 function ProgressBar({ ratio }: { ratio: number }) {
   return (
-    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+    <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: `${colors.accent}26` }}>
       <div
-        className="h-full bg-gray-900 rounded-full transition-all duration-500"
-        style={{ width: `${ratio * 100}%` }}
+        className="h-full rounded-full transition-all duration-500"
+        style={{ width: `${ratio * 100}%`, backgroundColor: colors.accent }}
       />
     </div>
   )

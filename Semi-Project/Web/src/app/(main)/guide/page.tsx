@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { colors } from '@/lib/design'
 
 interface Message {
   id: string
@@ -37,11 +38,12 @@ export default function GuidePage() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm whitespace-pre-line leading-relaxed ${
-                msg.isUser
-                  ? 'bg-gray-900 text-white rounded-br-sm'
-                  : 'bg-gray-100 text-gray-900 rounded-bl-sm'
-              }`}
+              className="max-w-[75%] px-4 py-2.5 text-sm whitespace-pre-line leading-relaxed"
+              style={{
+                backgroundColor: msg.isUser ? colors.accent : colors.cardBg,
+                color: msg.isUser ? '#fff' : '#111',
+                borderRadius: msg.isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+              }}
             >
               {msg.content}
             </div>
@@ -50,7 +52,10 @@ export default function GuidePage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="border-t border-gray-100 px-4 py-3 flex gap-2 items-end bg-white">
+      <div
+        className="px-4 py-3 flex gap-2 items-end"
+        style={{ borderTop: '1px solid rgba(0,0,0,0.06)', backgroundColor: colors.lightBg }}
+      >
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -62,14 +67,19 @@ export default function GuidePage() {
           }}
           placeholder="질문을 입력해 주세요."
           rows={1}
-          className="flex-1 resize-none bg-gray-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none max-h-28"
+          className="flex-1 resize-none rounded-2xl px-4 py-2.5 text-sm focus:outline-none max-h-28"
+          style={{ backgroundColor: colors.cardBg }}
         />
         <button
           onClick={handleSend}
           disabled={!input.trim()}
-          className="w-9 h-9 rounded-full bg-gray-900 text-white flex items-center justify-center disabled:opacity-30 flex-shrink-0"
+          className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity"
+          style={{
+            backgroundColor: colors.accent,
+            opacity: input.trim() ? 1 : 0.3,
+          }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 4l8 16-8-4-8 4 8-16z" />
           </svg>
         </button>

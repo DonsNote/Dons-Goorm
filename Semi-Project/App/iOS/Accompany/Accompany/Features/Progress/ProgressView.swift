@@ -25,7 +25,7 @@ struct ProgressReportView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 14) {
                     overallCard
                     ForEach(sections) { section in
                         sectionCard(section)
@@ -33,6 +33,7 @@ struct ProgressReportView: View {
                 }
                 .padding()
             }
+            .background(Color.App.lightBg)
             .navigationTitle("진행상황")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -40,6 +41,7 @@ struct ProgressReportView: View {
                     Button { onProfileTap() } label: {
                         Image(systemName: "person.circle")
                             .font(.title3)
+                            .foregroundColor(Color.App.accent)
                     }
                 }
             }
@@ -52,7 +54,7 @@ struct ProgressReportView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("전체 진행률")
                         .font(.headline)
-                    Text("사망일: \(formattedDeceasedDate)")
+                    Text("영면일: \(formattedDeceasedDate)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -60,9 +62,10 @@ struct ProgressReportView: View {
                 Text("\(Int(overallRatio * 100))%")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .foregroundColor(Color.App.accent)
             }
 
-            ProgressBar(ratio: overallRatio)
+            AppProgressBar(ratio: overallRatio)
 
             Text("\(totalCompleted)개 완료 / 총 \(totalTasks)개")
                 .font(.caption)
@@ -70,8 +73,8 @@ struct ProgressReportView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding()
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .cornerRadius(14)
+        .background(Color.App.cardBg)
+        .cornerRadius(AppSpacing.cardRadius)
     }
 
     private func sectionCard(_ section: ChecklistSection) -> some View {
@@ -82,6 +85,7 @@ struct ProgressReportView: View {
         return VStack(spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: section.category.icon)
+                    .foregroundColor(Color.App.accent)
                 Text(section.category.title)
                     .font(.subheadline)
                     .fontWeight(.medium)
@@ -90,28 +94,29 @@ struct ProgressReportView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            ProgressBar(ratio: ratio)
+            AppProgressBar(ratio: ratio)
         }
         .padding()
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .cornerRadius(14)
+        .background(Color.App.cardBg)
+        .cornerRadius(AppSpacing.cardRadius)
     }
 }
 
-private struct ProgressBar: View {
+private struct AppProgressBar: View {
     let ratio: Double
 
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(Color.secondary.opacity(0.2))
+                    .fill(Color.App.accent.opacity(0.15))
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(Color.primary)
+                    .fill(Color.App.accent)
                     .frame(width: geo.size.width * ratio)
             }
         }
         .frame(height: 6)
+        .animation(.easeInOut(duration: 0.4), value: ratio)
     }
 }
 

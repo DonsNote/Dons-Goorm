@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useChecklistStore } from '@/store/useChecklistStore'
+import { colors } from '@/lib/design'
 
 export default function ChecklistPage() {
   const { sections } = useChecklistStore()
@@ -19,7 +20,10 @@ export default function ChecklistPage() {
 
         return (
           <Link key={section.id} href={`/checklist/${section.id}`}>
-            <div className="bg-gray-50 rounded-2xl p-4 flex flex-col gap-3 active:opacity-70 transition-opacity">
+            <div
+              className="rounded-[14px] p-4 flex flex-col gap-3 active:opacity-70 transition-opacity"
+              style={{ backgroundColor: colors.cardBg }}
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{section.icon}</span>
@@ -28,17 +32,20 @@ export default function ChecklistPage() {
                 <CircleProgress ratio={ratio} />
               </div>
 
-              <div className="h-px bg-gray-200" />
+              <div className="h-px" style={{ backgroundColor: 'rgba(0,0,0,0.07)' }} />
 
               <div className="flex items-end justify-between">
                 <div className="flex flex-col gap-1">
-                  <p className={`text-sm ${nextTask ? 'text-gray-900' : 'text-gray-400'}`}>
+                  <p className="text-sm" style={{ color: nextTask ? '#111' : colors.accentDim }}>
                     {nextTask ? nextTask.title : '모든 항목 완료'}
                   </p>
                   <p className="text-xs text-gray-400">{completed}/{total} 완료</p>
                 </div>
                 {earliestDDay !== null && (
-                  <span className={`text-sm font-semibold ${earliestDDay <= 7 ? 'text-red-500' : 'text-gray-900'}`}>
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: earliestDDay <= 7 ? colors.warning : colors.accentDim }}
+                  >
                     D-{earliestDDay}
                   </span>
                 )}
@@ -56,11 +63,11 @@ function CircleProgress({ ratio }: { ratio: number }) {
   const circ = 2 * Math.PI * r
   return (
     <svg width="28" height="28" viewBox="0 0 28 28">
-      <circle cx="14" cy="14" r={r} fill="none" stroke="#e5e7eb" strokeWidth="2.5" />
+      <circle cx="14" cy="14" r={r} fill="none" stroke={`${colors.accent}33`} strokeWidth="2.5" />
       <circle
         cx="14" cy="14" r={r}
         fill="none"
-        stroke="#111827"
+        stroke={colors.accent}
         strokeWidth="2.5"
         strokeDasharray={circ}
         strokeDashoffset={circ * (1 - ratio)}

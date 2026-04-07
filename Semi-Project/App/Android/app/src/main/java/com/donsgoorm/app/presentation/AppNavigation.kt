@@ -7,12 +7,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.donsgoorm.app.presentation.auth.AuthScreen
 import com.donsgoorm.app.presentation.main.MainTabScreen
+import com.donsgoorm.app.presentation.onboarding.ChecklistSummaryScreen
 import com.donsgoorm.app.presentation.onboarding.DeceasedDateInputScreen
 import com.donsgoorm.app.presentation.onboarding.OnboardingSlideScreen
 import com.donsgoorm.app.presentation.splash.SplashScreen
 
 private enum class AppStep {
-    SPLASH, DECEASED_DATE_INPUT, ONBOARDING, LOGIN, MAIN
+    SPLASH, DECEASED_DATE_INPUT, CHECKLIST_SUMMARY, ONBOARDING, LOGIN, MAIN
 }
 
 @Composable
@@ -27,8 +28,14 @@ fun AppNavigation() {
         AppStep.DECEASED_DATE_INPUT ->
             DeceasedDateInputScreen(onComplete = { date ->
                 deceasedDateMillis = date
-                step = AppStep.ONBOARDING
+                step = AppStep.CHECKLIST_SUMMARY
             })
+
+        AppStep.CHECKLIST_SUMMARY ->
+            ChecklistSummaryScreen(
+                deceasedDateMillis = deceasedDateMillis,
+                onFinish = { step = AppStep.ONBOARDING }
+            )
 
         AppStep.ONBOARDING ->
             OnboardingSlideScreen(onFinish = { step = AppStep.LOGIN })

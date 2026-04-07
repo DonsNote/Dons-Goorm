@@ -10,6 +10,7 @@ import SwiftUI
 enum AppStep {
     case splash
     case deceasedDateInput
+    case checklistSummary
     case onboarding
     case login
     case main
@@ -29,6 +30,10 @@ struct ContentView: View {
         case .deceasedDateInput:
             DeceasedDateInputView { date in
                 deceasedDate = date
+                step = .checklistSummary
+            }
+        case .checklistSummary:
+            ChecklistSummaryView(deceasedDate: deceasedDate) {
                 step = .onboarding
             }
         case .onboarding:

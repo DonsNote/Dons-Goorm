@@ -17,11 +17,21 @@ class ChecklistViewModel @Inject constructor() : ViewModel() {
     fun toggleTask(sectionId: String, taskId: String) {
         _sections.value = _sections.value.map { section ->
             if (section.id != sectionId) return@map section
-            section.copy(
-                tasks = section.tasks.map { task ->
-                    if (task.id == taskId) task.copy(isCompleted = !task.isCompleted) else task
-                }
-            )
+            section.copy(tasks = section.tasks.map { task ->
+                if (task.id == taskId) task.copy(isCompleted = !task.isCompleted) else task
+            })
+        }
+    }
+
+    fun toggleDocument(sectionId: String, taskId: String, docId: String) {
+        _sections.value = _sections.value.map { section ->
+            if (section.id != sectionId) return@map section
+            section.copy(tasks = section.tasks.map { task ->
+                if (task.id != taskId) return@map task
+                task.copy(documents = task.documents.map { doc ->
+                    if (doc.id == docId) doc.copy(isReady = !doc.isReady) else doc
+                })
+            })
         }
     }
 }

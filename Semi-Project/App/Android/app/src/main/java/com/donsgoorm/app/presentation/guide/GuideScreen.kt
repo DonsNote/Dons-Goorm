@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,17 +19,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,8 +40,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.donsgoorm.app.presentation.ui.AppColor
 
 data class GuideMessage(val content: String, val isUser: Boolean)
 
@@ -60,13 +62,17 @@ fun GuideScreen() {
     val listState = rememberLazyListState()
 
     LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.size - 1)
-        }
+        if (messages.isNotEmpty()) listState.animateScrollToItem(messages.size - 1)
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("가이드") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text("가이드", fontWeight = FontWeight.SemiBold) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColor.LightBg)
+            )
+        },
+        containerColor = AppColor.LightBg,
         contentWindowInsets = WindowInsets(0)
     ) { paddingValues ->
         Column(
@@ -82,17 +88,16 @@ fun GuideScreen() {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item { Spacer(modifier = Modifier.height(4.dp)) }
-                items(messages) { message ->
-                    MessageBubble(message = message)
-                }
+                items(messages) { message -> MessageBubble(message = message) }
                 item { Spacer(modifier = Modifier.height(4.dp)) }
             }
 
-            HorizontalDivider()
+            HorizontalDivider(color = Color.Black.copy(alpha = 0.06f))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(AppColor.LightBg)
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -100,12 +105,14 @@ fun GuideScreen() {
                 TextField(
                     value = inputText,
                     onValueChange = { inputText = it },
-                    placeholder = { Text("질문을 입력해 주세요.") },
+                    placeholder = { Text("질문을 입력해 주세요.", color = Color.Gray) },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedContainerColor = AppColor.CardBg,
+                        unfocusedContainerColor = AppColor.CardBg
                     ),
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     maxLines = 4
@@ -124,9 +131,7 @@ fun GuideScreen() {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
                         contentDescription = "전송",
-                        tint = if (inputText.trim().isNotEmpty())
-                            MaterialTheme.colorScheme.onSurface
-                        else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (inputText.trim().isNotEmpty()) AppColor.Accent else AppColor.Accent.copy(alpha = 0.3f)
                     )
                 }
             }
@@ -145,23 +150,17 @@ private fun MessageBubble(message: GuideMessage) {
                 .widthIn(max = 280.dp)
                 .clip(
                     RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
+                        topStart = 16.dp, topEnd = 16.dp,
                         bottomStart = if (message.isUser) 16.dp else 4.dp,
                         bottomEnd = if (message.isUser) 4.dp else 16.dp
                     )
                 )
-                .background(
-                    if (message.isUser) MaterialTheme.colorScheme.onBackground
-                    else MaterialTheme.colorScheme.surfaceVariant
-                )
+                .background(if (message.isUser) AppColor.Accent else AppColor.CardBg)
                 .padding(horizontal = 14.dp, vertical = 10.dp)
         ) {
             Text(
                 text = message.content,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (message.isUser) MaterialTheme.colorScheme.background
-                else MaterialTheme.colorScheme.onSurface
+                color = if (message.isUser) Color.White else Color.Black
             )
         }
     }
