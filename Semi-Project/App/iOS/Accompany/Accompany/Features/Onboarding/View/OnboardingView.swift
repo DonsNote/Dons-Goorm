@@ -134,7 +134,7 @@ private struct OnboardingSlide4: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("혼자 애쓰지 마세요\n저희가 밤낮없이 곁에 있을게요")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .lineSpacing(4)
 
                     Text("복잡한 절차부터 사소한 질문까지\n실시간으로 답해드려요")
@@ -180,7 +180,7 @@ private func slideCaption(title: String, sub: String) -> some View {
     VStack(alignment: .leading, spacing: 10) {
         Text(title)
             .font(.system(size: 24, weight: .bold))
-            .foregroundColor(.black)
+            .foregroundColor(.primary)
             .lineSpacing(4)
 
         Text(sub)

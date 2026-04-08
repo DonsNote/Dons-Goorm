@@ -11,7 +11,7 @@ struct AuthView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("처음부터 끝까지\n함께 동행하겠습니다")
                         .font(Font.App.displayBold)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .lineSpacing(4)
 
                     Text("고인께서 남기신 것들\n저희가 끝까지 곁에서 정리해드리겠습니다")

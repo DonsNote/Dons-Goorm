@@ -37,7 +37,7 @@ struct ChecklistSummaryView: View {
                     Text("고객님이\n처리해야 할 일이")
                         .font(Font.App.headlineMd)
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
 
                     Text("\(totalCount)건")
                         .font(Font.App.accentNumber)
@@ -45,7 +45,7 @@ struct ChecklistSummaryView: View {
 
                     Text("있습니다")
                         .font(Font.App.headlineMd)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
 
                 Spacer().frame(height: 20)
@@ -71,7 +71,7 @@ struct ChecklistSummaryView: View {
                             Text("\(numbers[index]) \(section.category.title)")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
 
                             Spacer()
 
@@ -109,7 +109,7 @@ struct ChecklistSummaryView: View {
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
                             Rectangle()
-                                .fill(Color.black.opacity(0.1))
+                                .fill(Color.primary.opacity(0.1))
                             Rectangle()
                                 .fill(Color.App.accentDark)
                                 .frame(width: geo.size.width * progressValue)

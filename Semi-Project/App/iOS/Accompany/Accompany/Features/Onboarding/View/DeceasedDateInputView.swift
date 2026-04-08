@@ -17,7 +17,7 @@ struct DeceasedDateInputView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("이제 혼자\n챙기지 않아도 됩니다")
                         .font(Font.App.displayBold)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .lineSpacing(4)
 
                     Text("고인께서 영면에 드신 날을 입력해주시면\n처리해야 할 모든 것을 알려드릴게요")

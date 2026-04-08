@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -74,24 +73,10 @@ fun ChecklistDetailScreen(
                 .padding(16.dp)
         ) {
             item {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(AppColor.CardBg)
-                ) {
-                    itemsIndexed(currentSection.tasks) { index, task ->
-                        TaskRow(
-                            task = task,
-                            onClick = { onTaskClick(task) }
-                        )
-                        if (index < currentSection.tasks.size - 1) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(start = 56.dp),
-                                color = Color.Black.copy(alpha = 0.06f)
-                            )
-                        }
-                    }
-                }
+                TaskListContent(
+                    section = currentSection,
+                    onTaskClick = onTaskClick
+                )
             }
             item { Spacer(modifier = Modifier.height(24.dp)) }
         }

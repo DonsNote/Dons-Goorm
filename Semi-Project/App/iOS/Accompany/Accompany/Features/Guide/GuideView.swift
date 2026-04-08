@@ -116,7 +116,7 @@ private struct AICoordinatorHeader: View {
                 Text("AI 코디네이터")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
 
                 HStack(spacing: 5) {
                     Circle()
